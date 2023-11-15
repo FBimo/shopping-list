@@ -29,7 +29,9 @@
         </div>
     </nav>
 
-    <table id="product_table"></table>
+    <table id="product_table">
+        
+    </table>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -79,16 +81,26 @@
                 <th>Description</th>
                 <th>Date Added</th>
             </tr>`
+            
             products.forEach((item) => {
                 htmlString += `\n<tr>
                 <td>${item.fields.name}</td>
                 <td>${item.fields.price}</td>
                 <td>${item.fields.description}</td>
                 <td>${item.fields.date_added}</td>
-            </tr>` 
+                <td><a><button class='btn btn-danger' onclick='removeProduct(${item.pk})'>Remove</button></a></td>
+                </tr>` 
             })
         
             document.getElementById("product_table").innerHTML = htmlString
+        }
+
+        async function removeProduct(id) {
+            let url="{% url 'main:remove_product_ajax' '0' %}";
+            url=url.replace('0',id);
+            const response =await fetch(url,{
+                method: "DELETE",
+            }).then(refreshProducts);
         }
 
         refreshProducts()
@@ -103,7 +115,36 @@
             return false
         }
 
-        document.getElementById("button_add").onclick = addProduct
+        // document.getElementById("button_add").onclick = addProduct
+
+        // // Add a click event listener to the remove buttons
+        // document.querySelectorAll('.rm-btn').forEach(function(button) {
+        //     button.addEventListener('click', function() {
+        //         // Get the item ID from the button's data attribute
+        //         var itemId = button.getAttribute('data-product-id');
+        //         console.log(print(itemId))
+
+        //         // Send an AJAX request to remove the item
+        //         fetch(`remove-product-ajax/${item.pk}/`, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'X-CSRFToken': csrf_token, // Ensure you include the CSRF token
+        //             }
+        //         })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (data.message === 'Item removed successfully') {
+        //                 // Remove the item from the DOM
+        //                 button.parentNode.remove();
+        //             } else {
+        //                 console.error('Error:', data.message);
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('Error:', error);
+        //         });
+        //     });
+        // });
 
     </script>
 
